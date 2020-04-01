@@ -13,7 +13,7 @@ import pathlib
 import math
 
 
-# In[16]:
+# In[12]:
 
 
 class Pre_process_img():
@@ -105,74 +105,12 @@ class Pre_process_img():
             plt.imshow(img_arr)
             return np.arrary(img_arr)
           
+          
     # img_arr shape = (H,W,C)
-    def rgb_to_gray(self, img_arr, new_axis=True):
+    def rgb_to_gray(self, img_arr):
       if np.ndim(img_arr) != 3:
         raise ValueError('img_arr must be 3 dim')
       #  0.299 * R + 0.587 * G + 0.114 * B
       gray_img = (0.299*img_arr[:,:,0] + 0.587 * img_arr[:,:,1] + 0.114 *img_arr[:,:,2])
-      if new_axis:
-        return gray_img[:,:,np.newaxis]
-      else:
-        return gray_img
-
-
-# In[14]:
-
-
-# !jupyter nbconvert --to script pre_processing.ipynb
-
-
-# In[17]:
-
-
-# from util import csv_file_load
-# import pathlib
-# import matplotlib.pyplot as plt
-# import numpy as np
-# p = pathlib.Path('steel_images')
-# train_pd = csv_file_load(p/'train.csv')
-
-# img_arr = plt.imread(p/'train_images'/train_pd.ImageId[0] )
-
-# plt.figure(figsize=(30,15))
-# plt.subplot(1,2,1)
-# plt.imshow(img_arr)
-# np.shape(img_arr)
-# g = Pre_process_img().rgb_to_gray(img_arr)
-# np.shape(g)
-# plt.subplot(1,2,2)
-# plt.imshow(g, cmap='gray')
-
-
-# In[6]:
-
-
-# import cv2
-
-# img = cv2.imread(str(p/'train_images'/train_pd.ImageId[0]))
-# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-# cv2.imshow('origin',img)
-# cv2.imshow('gray', g)
-
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
-
-# In[8]:
-
-
-# colors_of_classes = [(0,0,0), (255,0,0), (0,255,0), (0,0,255), (255,0,255)]
-# masked_imgs_arr = []
-# for i,img in enumerate(img_arr_list):
-#     mask = p.decode_pixels_to_mask(np.shape(img), encoded_list[i])
-#     masked_img = p.apply_mask_to_img(img, mask, colors_of_classes[classes[i]])
-#     masked_imgs_arr.append(masked_img)
-    
-# fig, axes = plt.subplots(ncols=2, nrows=np.ceil(len(masked_imgs_arr)/2).astype(int), figsize=(30,15))
-# for i, m_img in enumerate(masked_imgs_arr):
-#     row, col = i//2, i%2
-#     axes[row, col].set_title(f'Class {classes[i]}')
-#     axes[row, col].imshow(m_img)
-
+      
+      return gray_img

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 from torch.utils.data.dataset import Dataset
@@ -9,7 +9,8 @@ import torch
 import pathlib
 
 import matplotlib.pyplot as plt
-import numpy as np 
+import numpy as np
+
 # import import_ipynb
 from util import csv_file_load
 from pre_processing import Pre_process_img as p
@@ -36,6 +37,8 @@ class Steel_dataset(Dataset):
         
         # img read and standardize
         img_arr = plt.imread(str(self.img_f_path / name))
+        # convert rgv to grayscale
+        img_arr = p().rgb_to_gray(img_arr, new_axis=True)
         
         # decode rle 1d into 2d tensor with maksing class number
         mask = p().decode_pixels_to_mask(size=np.shape(img_arr), encoded_p=encoded_p, mask_val=int(i_class))
@@ -54,7 +57,7 @@ class Steel_dataset(Dataset):
         return len(self.dataframe)
 
 
-# In[6]:
+# In[2]:
 
 
 # !jupyter nbconvert --to script steel_dataset.ipynb
