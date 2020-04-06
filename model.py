@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[4]:
 
 
 import torch 
@@ -12,7 +12,21 @@ from collections import OrderedDict
 import math
 
 
-# In[9]:
+# In[ ]:
+
+
+# class Cont2D(nn.Module):
+  
+#   def __init__(self, in_channel, out_channel, kernel_size, act_f='relu'):
+#     super(self,Cont2D).__init__()
+    
+#     self.in_channel = in_channel
+#     self.out
+    
+    
+
+
+# In[5]:
 
 
 class U_net(nn.Module):
@@ -36,6 +50,8 @@ class U_net(nn.Module):
         # activation function
         self.c_activation_f = nn.ReLU(inplace=True)
         
+       
+        
         # channels
         self.n_out_channels1 = 64
         self.n_out_channels2 = 128
@@ -51,43 +67,65 @@ class U_net(nn.Module):
         
         self.c_max_pooling =  nn.MaxPool2d(self.max_pool_kernel_size, stride=self.max_pool_stride)
         
+         # Batch normalization
+        self.c_bn11 = nn.BatchNorm2d(self.n_out_channels1)
+        self.c_bn12 = nn.BatchNorm2d(self.n_out_channels1)
+        self.c_bn21 = nn.BatchNorm2d(self.n_out_channels2)
+        self.c_bn22 = nn.BatchNorm2d(self.n_out_channels2)
+        self.c_bn31 = nn.BatchNorm2d(self.n_out_channels3)
+        self.c_bn32 = nn.BatchNorm2d(self.n_out_channels3)
+        self.c_bn41 = nn.BatchNorm2d(self.n_out_channels4)
+        self.c_bn42 = nn.BatchNorm2d(self.n_out_channels4)
+        self.c_bn51 = nn.BatchNorm2d(self.n_out_channels5)
+        self.c_bn52 = nn.BatchNorm2d(self.n_out_channels5)
+        
         ### contractive path layers ###
         # 1th layer, size of input image : (batch, c=3, h=256, w=1600)
         self.cont_layer1 = nn.Sequential(OrderedDict([
            ('c_conv11', nn.Conv2d(in_channels=self.in_channel, out_channels=self.n_out_channels1, kernel_size=self.c_kernel_size)),
            ('c_act_f11', self.c_activation_f),
+           ('c_bn_11', self.c_bn11),
            ('c_conv12', nn.Conv2d(in_channels=self.n_out_channels1, out_channels=self.n_out_channels1, kernel_size=self.c_kernel_size)),
-           ('c_act_f12', self.c_activation_f)
+           ('c_act_f12', self.c_activation_f),
+           ('c_bn_12', self.c_bn12)
         ]))
     
         # 2th layer
         self.cont_layer2 = nn.Sequential(OrderedDict([
             ('c_conv21', nn.Conv2d(in_channels=self.n_out_channels1, out_channels=self.n_out_channels2, kernel_size=self.c_kernel_size)),
             ('c_act_f21', self.c_activation_f),
+            ('c_bn_21', self.c_bn21),
             ('c_conv22', nn.Conv2d(in_channels=self.n_out_channels2, out_channels=self.n_out_channels2, kernel_size=self.c_kernel_size)),
-            ('c_act_f22', self.c_activation_f)
+            ('c_act_f22', self.c_activation_f),
+            ('c_bn_22', self.c_bn22)
         ]))
 
         # 3th layer
         self.cont_layer3 = nn.Sequential(OrderedDict([
             ('c_conv31', nn.Conv2d(in_channels=self.n_out_channels2, out_channels=self.n_out_channels3, kernel_size=self.c_kernel_size)),
             ('c_act_f31', self.c_activation_f),
+            ('c_bn_31', self.c_bn31),
             ('c_conv32', nn.Conv2d(in_channels=self.n_out_channels3, out_channels=self.n_out_channels3, kernel_size=self.c_kernel_size)),
-            ('c_act_f32', self.c_activation_f)
+            ('c_act_f32', self.c_activation_f),
+            ('c_bn_32', self.c_bn32),
         ]))
         # 4th layer
         self.cont_layer4 = nn.Sequential(OrderedDict([
             ('c_conv41', nn.Conv2d(in_channels=self.n_out_channels3, out_channels=self.n_out_channels4, kernel_size=self.c_kernel_size)),
             ('c_act_f41', self.c_activation_f),
+            ('c_bn_41', self.c_bn41),
             ('c_conv42', nn.Conv2d(in_channels=self.n_out_channels4, out_channels=self.n_out_channels4, kernel_size=self.c_kernel_size)),
-            ('c_act_f42', self.c_activation_f)
+            ('c_act_f42', self.c_activation_f),
+            ('c_bn_42', self.c_bn42)
         ]))
         # 5th layer
         self.cont_layer5 = nn.Sequential(OrderedDict([
             ('c_conv51', nn.Conv2d(in_channels=self.n_out_channels4, out_channels=self.n_out_channels5, kernel_size=self.c_kernel_size)),
             ('c_act_f51', self.c_activation_f),
+            ('c_bn_51', self.c_bn51),
             ('c_conv52', nn.Conv2d(in_channels=self.n_out_channels5, out_channels=self.n_out_channels5, kernel_size=self.c_kernel_size)),
-            ('c_act_f52', self.c_activation_f)
+            ('c_act_f52', self.c_activation_f),
+            ('c_bn_52', self.c_bn52)
         ]))
         
         ### expansive path layers ###
@@ -188,8 +226,14 @@ class U_net(nn.Module):
         
 
 
-# In[1]:
+# In[6]:
 
 
-#!jupyter nbconvert --to script model.ipynb
+
+
+
+# In[3]:
+
+
+# !jupyter nbconvert --to script model.ipynb
 
