@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[20]:
 
 
 import matplotlib.pyplot as plt
@@ -9,11 +9,13 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 
+import cv2
+
 import pathlib
 import math
 
 
-# In[12]:
+# In[22]:
 
 
 class Pre_process_img():
@@ -50,12 +52,32 @@ class Pre_process_img():
         return mask.reshape(h,w, order='F')
     
         # color : which color to draw mask RGB
-    def apply_mask_to_img(self, img, mask, color, mask_val=1, alpha=0.5):
-        if not np.ndim(color):
-            raise ValueError('color must be 3dim.')
-        img[mask==mask_val] = ((1-alpha)*img[mask==mask_val] + alpha*np.array(color))
-        return img
-    
+    def apply_mask_to_img(self, img, mask, color, mask_val=1, alpha=0.5, dataformat='NHWC'):
+      '''
+          img : (N,H,W,C), (N,C,H,W), (N,H,W) (H,W), (H,W,C), (C,H,W) 
+          mask : (N,H,W), (H,W)
+      '''
+      if np.ndim(color) != 3:
+        raise ValueError('color must be 3dim.')
+
+      if dataformat in ('NHWC', 'HWC'):
+        mask = mask[:,:,np.newaxis]
+      elif dataformat == 'NCHW':
+        img = np.transpose(img, (0,2,3,1)) # convert into 'NHWC'
+        mask = mask[:,:,np.newaxis]
+      elif dataforamt == 'CHW':
+        img = np.transpose(img, (1,2,0)) # convert into 'HWC'
+        mask = mask[:,:,np.newaxis]
+      elif dataforamt in('HW', 'NHW'):
+
+      else:
+        raise ValueError('dataformat is wrong')
+
+      img = img.copy()
+      img[mask==mask_val] = ((1-alpha)*img[mask==mask_val] + alpha*np.array(color))
+      return img
+
+        
     def crop_img(self, img_arr, h, w):
         """
             img_arr = (h,w,c) or (h,w)
@@ -105,12 +127,14 @@ class Pre_process_img():
             plt.imshow(img_arr)
             return np.arrary(img_arr)
           
-          
     # img_arr shape = (H,W,C)
-    def rgb_to_gray(self, img_arr):
+    def rgb_to_gray(self, img_arr, new_axis=True):
       if np.ndim(img_arr) != 3:
         raise ValueError('img_arr must be 3 dim')
       #  0.299 * R + 0.587 * G + 0.114 * B
       gray_img = (0.299*img_arr[:,:,0] + 0.587 * img_arr[:,:,1] + 0.114 *img_arr[:,:,2])
-      
-      return gray_img
+      if new_axis:
+        return gray_img[:,:,np.newaxis]
+      else:
+        return gray_img
+

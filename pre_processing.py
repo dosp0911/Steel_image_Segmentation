@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[20]:
 
 
 import matplotlib.pyplot as plt
@@ -9,11 +9,13 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 
+import cv2
+
 import pathlib
 import math
 
 
-# In[16]:
+# In[22]:
 
 
 class Pre_process_img():
@@ -50,12 +52,32 @@ class Pre_process_img():
         return mask.reshape(h,w, order='F')
     
         # color : which color to draw mask RGB
-    def apply_mask_to_img(self, img, mask, color, mask_val=1, alpha=0.5):
-        if not np.ndim(color):
-            raise ValueError('color must be 3dim.')
-        img[mask==mask_val] = ((1-alpha)*img[mask==mask_val] + alpha*np.array(color))
-        return img
-    
+    def apply_mask_to_img(self, img, mask, color, mask_val=1, alpha=0.5, dataformat='NHWC'):
+      '''
+          img : (N,H,W,C), (N,C,H,W), (N,H,W) (H,W), (H,W,C), (C,H,W) 
+          mask : (N,H,W), (H,W)
+      '''
+      if np.ndim(color) != 3:
+        raise ValueError('color must be 3dim.')
+
+      if dataformat in ('NHWC', 'HWC'):
+        mask = mask[:,:,np.newaxis]
+      elif dataformat == 'NCHW':
+        img = np.transpose(img, (0,2,3,1)) # convert into 'NHWC'
+        mask = mask[:,:,np.newaxis]
+      elif dataforamt == 'CHW':
+        img = np.transpose(img, (1,2,0)) # convert into 'HWC'
+        mask = mask[:,:,np.newaxis]
+      elif dataforamt in('HW', 'NHW'):
+
+      else:
+        raise ValueError('dataformat is wrong')
+
+      img = img.copy()
+      img[mask==mask_val] = ((1-alpha)*img[mask==mask_val] + alpha*np.array(color))
+      return img
+
+        
     def crop_img(self, img_arr, h, w):
         """
             img_arr = (h,w,c) or (h,w)
@@ -115,64 +137,4 @@ class Pre_process_img():
         return gray_img[:,:,np.newaxis]
       else:
         return gray_img
-
-
-# In[14]:
-
-
-# !jupyter nbconvert --to script pre_processing.ipynb
-
-
-# In[17]:
-
-
-# from util import csv_file_load
-# import pathlib
-# import matplotlib.pyplot as plt
-# import numpy as np
-# p = pathlib.Path('steel_images')
-# train_pd = csv_file_load(p/'train.csv')
-
-# img_arr = plt.imread(p/'train_images'/train_pd.ImageId[0] )
-
-# plt.figure(figsize=(30,15))
-# plt.subplot(1,2,1)
-# plt.imshow(img_arr)
-# np.shape(img_arr)
-# g = Pre_process_img().rgb_to_gray(img_arr)
-# np.shape(g)
-# plt.subplot(1,2,2)
-# plt.imshow(g, cmap='gray')
-
-
-# In[6]:
-
-
-# import cv2
-
-# img = cv2.imread(str(p/'train_images'/train_pd.ImageId[0]))
-# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-# cv2.imshow('origin',img)
-# cv2.imshow('gray', g)
-
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
-
-# In[8]:
-
-
-# colors_of_classes = [(0,0,0), (255,0,0), (0,255,0), (0,0,255), (255,0,255)]
-# masked_imgs_arr = []
-# for i,img in enumerate(img_arr_list):
-#     mask = p.decode_pixels_to_mask(np.shape(img), encoded_list[i])
-#     masked_img = p.apply_mask_to_img(img, mask, colors_of_classes[classes[i]])
-#     masked_imgs_arr.append(masked_img)
-    
-# fig, axes = plt.subplots(ncols=2, nrows=np.ceil(len(masked_imgs_arr)/2).astype(int), figsize=(30,15))
-# for i, m_img in enumerate(masked_imgs_arr):
-#     row, col = i//2, i%2
-#     axes[row, col].set_title(f'Class {classes[i]}')
-#     axes[row, col].imshow(m_img)
 
