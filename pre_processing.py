@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[20]:
+# In[1]:
 
 
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ import pathlib
 import math
 
 
-# In[22]:
+# In[24]:
 
 
 class Pre_process_img():
@@ -57,7 +57,7 @@ class Pre_process_img():
           img : (N,H,W,C), (N,C,H,W), (N,H,W) (H,W), (H,W,C), (C,H,W) 
           mask : (N,H,W), (H,W)
       '''
-      if np.ndim(color) != 3:
+      if len(color) != 3:
         raise ValueError('color must be 3dim.')
 
       if dataformat in ('NHWC', 'HWC'):
@@ -69,7 +69,7 @@ class Pre_process_img():
         img = np.transpose(img, (1,2,0)) # convert into 'HWC'
         mask = mask[:,:,np.newaxis]
       elif dataforamt in('HW', 'NHW'):
-
+        pass
       else:
         raise ValueError('dataformat is wrong')
 
@@ -79,53 +79,53 @@ class Pre_process_img():
 
         
     def crop_img(self, img_arr, h, w):
-        """
-            img_arr = (h,w,c) or (h,w)
-            h , w = img size after cropping
-            
-        """
-        dims = np.ndim(img_arr)
-        if dims is 2:
-            h_old, w_old = np.shape(img_arr)
-        elif dims is 3:
-            h_old, w_old, _ = np.shape(img_arr)
-        else:
-            raise ValueError('img shape does not fit.')
-            
-        x = math.ceil((h_old - h) / 2)
-        y = math.ceil((w_old - w) / 2)
-        
-        if dims is 2:
-            return img_arr[x:(x + h), y:(y + w)]
-        elif dims is 3:
-            return img_arr[x:(x + h), y:(y + w), :]
-    
+      """
+          img_arr = (h,w,c) or (h,w)
+          h , w = img size after cropping
+
+      """
+      dims = np.ndim(img_arr)
+      if dims is 2:
+          h_old, w_old = np.shape(img_arr)
+      elif dims is 3:
+          h_old, w_old, _ = np.shape(img_arr)
+      else:
+          raise ValueError('img shape does not fit.')
+
+      x = math.ceil((h_old - h) / 2)
+      y = math.ceil((w_old - w) / 2)
+
+      if dims is 2:
+          return img_arr[x:(x + h), y:(y + w)]
+      elif dims is 3:
+          return img_arr[x:(x + h), y:(y + w), :]
+
     def show_images_by_raw(self, img_arr, ncols, figsize=(20,10)):
-        if not np.ndim(img_arr)== 4:
-            raise ValueError('img_arr must be 4 dims.')
-        num = len(img_arr)
-        plt.figure(figsize=figsize)
-        for i in range(num):
-            plt.subplot(num/ncols, ncols, i+1)
-            plt.imshow(img_arr_s[i])
-    
+      if not np.ndim(img_arr)== 4:
+          raise ValueError('img_arr must be 4 dims.')
+      num = len(img_arr)
+      plt.figure(figsize=figsize)
+      for i in range(num):
+          plt.subplot(num/ncols, ncols, i+1)
+          plt.imshow(img_arr_s[i])
+
     def show_images(self, f_path, image_ids, n_col=2, figsize=(10,10)):
 
-        if isinstance(image_ids, (list, pd.Series)):
-            img_arr_list = []
-            n_imgs = len(image_ids)
-            fig, axes = plt.subplots(ncols=n_col, nrows=int(np.ceil(n_imgs/n_col)), figsize=figsize)
+      if isinstance(image_ids, (list, pd.Series)):
+          img_arr_list = []
+          n_imgs = len(image_ids)
+          fig, axes = plt.subplots(ncols=n_col, nrows=int(np.ceil(n_imgs/n_col)), figsize=figsize)
 
-            for i, img_id in enumerate(image_ids):
-                img_arr = plt.imread(f_path / img_id)
-                axes[i//n_col, i%n_col].imshow(img_arr)
-                img_arr_list.append(np.array(img_arr)) # np array 수정권한이 없어서 복사
-            return img_arr_list
+          for i, img_id in enumerate(image_ids):
+              img_arr = plt.imread(f_path / img_id)
+              axes[i//n_col, i%n_col].imshow(img_arr)
+              img_arr_list.append(np.array(img_arr)) # np array 수정권한이 없어서 복사
+          return img_arr_list
 
-        else:
-            img_arr = plt.imread(f_path / image_ids)
-            plt.imshow(img_arr)
-            return np.arrary(img_arr)
+      else:
+          img_arr = plt.imread(f_path / image_ids)
+          plt.imshow(img_arr)
+          return np.arrary(img_arr)
           
     # img_arr shape = (H,W,C)
     def rgb_to_gray(self, img_arr, new_axis=True):
@@ -137,4 +137,51 @@ class Pre_process_img():
         return gray_img[:,:,np.newaxis]
       else:
         return gray_img
+
+
+# In[25]:
+
+
+if __name__ == '__main__':
+  get_ipython().system('jupyter nbconvert --to script pre_processing.ipynb')
+
+
+# In[19]:
+
+
+if __name__ == '__main__':
+
+  from util import csv_file_load
+  import pathlib
+  import matplotlib.pyplot as plt
+  import numpy as np
+  import cv2
+  import torch
+
+  p = pathlib.Path('steel_images')
+  train_pd = csv_file_load(p/'train.csv')
+  pre = Pre_process_img()
+  img_arr = plt.imread(p/'train_images'/train_pd.ImageId[0] )
+
+
+
+  for k in range(10):
+    rand_idx = list(np.random.randint(0, high=len(train_pd), size=10))
+    img_arr_list = [np.array(plt.imread(p/'train_images'/train_pd.ImageId[i])) for i in rand_idx]
+    masked_imgs_arr = []
+    colors_of_classes = [(0,0,0), (255,0,0), (0,255,0), (0,0,255), (255,0,255)]
+
+    for i,img in enumerate(img_arr_list):
+        mask = pre.decode_pixels_to_mask(np.shape(img), train_pd.EncodedPixels[rand_idx[i]])
+        masked_img = pre.apply_mask_to_img(img, mask, colors_of_classes[train_pd.ClassId[rand_idx[i]]])
+        masked_imgs_arr.append(masked_img)
+
+    fig, axes = plt.subplots(ncols=2, nrows=len(masked_imgs_arr), figsize=(15,15))
+    fig.tight_layout()
+    for i, (m_img, o_img) in enumerate(zip(masked_imgs_arr, img_arr_list)):
+        axes[i, 0].set_title(f'Class {train_pd.ClassId[rand_idx[i]]}')
+        axes[i, 0].imshow(m_img)
+        axes[i, 1].set_title(f'Class {train_pd.ClassId[rand_idx[i]]}')
+        axes[i, 1].imshow(o_img)
+
 

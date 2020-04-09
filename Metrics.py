@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import torch
@@ -9,17 +9,21 @@ import torch.nn as nn
 import util
 
 
-# In[2]:
+# In[24]:
 
 
-def Dice(p, g):
-  p_ = p.contiguous().view(-1)
-  g_ = g.contiguous().view(-1)
-  intersection = (p_ * g_).sum()
-  union = p_.sum() + g_.sum()
+def Dice(pred, target, threshhold=0.5, dims=(2,3)):
   smooth = 1e-4
-  return (2 * intersection + smooth) / (union + smooth)
-  
+  pred = (pred >= threshhold).type(torch.float32)
+
+  intersection = (pred * target).sum(dim=dims) 
+  union = pred.sum(dim=dims) + target.sum(dim=dims) 
+
+  dice = torch.mean((2 * intersection + smooth) / (union + smooth))
+  return dice
+
+
+
 def Iou(p, g):
   p_ = p.contiguous().view(-1)
   g_ = g.contiguous().view(-1)
@@ -60,7 +64,7 @@ def F_score(p, r):
   return 2 * (p + r) / p * r 
 
 
-# In[60]:
+# In[17]:
 
 
 
@@ -87,6 +91,8 @@ class GeneralizedDICELoss(nn.Module):
     """
     
     assert 1 < len(pred.size()) < 5 and 1 < len(target.size()) < 5
+    pred.requires_grad_(True)
+    target.requires_grad_(True)
     
     smooth = 1e-4
     pred = (pred >= threshhold).type(torch.float32)
@@ -104,7 +110,7 @@ class GeneralizedDICELoss(nn.Module):
     return 1 - dice
 
 
-# In[34]:
+# In[14]:
 
 
 class DICELoss(nn.Module):
@@ -127,6 +133,9 @@ class DICELoss(nn.Module):
     
     assert 1 < len(pred.size()) < 5 and 1 < len(target.size()) < 5
     
+    pred.requires_grad_(True)
+    target.requires_grad_(True)
+    
     smooth = 1e-4
     pred = (pred >= threshhold).type(torch.float32)
       
@@ -142,38 +151,9 @@ class DICELoss(nn.Module):
   
 
 
-# In[61]:
+# In[23]:
 
 
-import torch
-a = torch.ones((2,3,4,5))
-b = torch.ones((2,4,5))
-c = torch.zeros((2,3,4,5))
-
-f = torch.ones((3,4))
-g = torch.zeros((3,4))
-
-# torch.mul(a,b).sum(dim=(2,3))
-# torch.sum(a, dim=(2,3)) + torch.sum(b, dim=(2,3))
-a[:,0,...]=0
-a[:,1,...]=1
-a[:,2,...]=0
-b = util.class2d_to_onehot([0,1,2])(b)
-print(b.size())
-# print(b)
-# print(a)
-print(GeneralizedDICELoss([0.2,0.5,0.3])(a,b))
-# print(a*b)
-# m =(a*b).sum(dim=(2,3))
-# n = a.sum(dim=(2,3)) + b.sum(dim=(2,3))
-# print(m)
-# print(n)
-
-# print(torch.mean((2*m+1e-4)/(n+1e-4)))
-
-
-# In[ ]:
-
-
-
+if __name__ == '__main__':
+  get_ipython().system('jupyter nbconvert --to script Metrics.ipynb')
 
