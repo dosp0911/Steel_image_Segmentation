@@ -16,12 +16,12 @@ from util import csv_file_load
 from pre_processing import Pre_process_img as p
 
 
-# In[4]:
+# In[3]:
 
 
 class Steel_dataset(Dataset):
     # out_size =  the size of output of the final layer for mask
-    def __init__(self, img_f_path, dataframe, out_size=(132, 1476)):
+    def __init__(self, img_f_path, dataframe, out_size=(256, 1600)):
         super(Steel_dataset, self).__init__()
         
         if isinstance(img_f_path, str):
@@ -46,7 +46,7 @@ class Steel_dataset(Dataset):
         mask = torch.from_numpy(mask)
         
         #overlap-tile strategy
-        img_arr = p().overlap_tile(img_arr, 30, 30) 
+        img_arr = p().overlap_tile(img_arr, 92, 92) # input size H,W: (440, 1784) -> output size: H,W:(256,1600) 
         img_arr = torch.from_numpy(img_arr) / 255.0
         #convert img shape into(C,H,W)
         img_arr = img_arr.permute(2,0,1)
@@ -57,7 +57,7 @@ class Steel_dataset(Dataset):
         return len(self.dataframe)
 
 
-# In[2]:
+# In[4]:
 
 
 # !jupyter nbconvert --to script steel_dataset.ipynb
