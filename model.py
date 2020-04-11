@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import torch 
@@ -12,7 +12,7 @@ from collections import OrderedDict
 import math
 
 
-# In[5]:
+# In[3]:
 
 
 class U_net(nn.Module):
@@ -175,41 +175,37 @@ class U_net(nn.Module):
         return features[:,:, x:(x + h), y:(y + w)]
     
     def contracting_path(self, x):
-        print(x.size())
         self.cont_layer1_out = self.cont_layer1(x)
+        
         self.cont_layer2_in = self.c_max_pooling(self.cont_layer1_out)
-        print(self.cont_layer2_in.size())
         self.cont_layer2_out = self.cont_layer2(self.cont_layer2_in)
+        
         self.cont_layer3_in = self.c_max_pooling(self.cont_layer2_out)
-        print(self.cont_layer3_in.size())
         self.cont_layer3_out = self.cont_layer3(self.cont_layer3_in)
+        
         self.cont_layer4_in = self.c_max_pooling(self.cont_layer3_out)
-        print(self.cont_layer4_in.size())
         self.cont_layer4_out = self.cont_layer4(self.cont_layer4_in)
+        
         self.cont_layer5_in = self.c_max_pooling(self.cont_layer4_out)
-        print(self.cont_layer5_in.size())
         self.cont_layer5_out = self.cont_layer5(self.cont_layer5_in)
         
         return self.cont_layer5_out
     
     # x = cont_layer5_out
     def expansive_path(self, x):
-        print('exp')
-        print(x.size())
         x = self.exp_layer5(x)
-        print(x.size())
+        
         x = self.skipped_connection(self.cont_layer4_out, x, x.size()[2], x.size()[3])
         x = self.exp_layer4(x)
-        print(x.size())
+        
         x = self.skipped_connection(self.cont_layer3_out, x, x.size()[2], x.size()[3])
         x = self.exp_layer3(x)
-        print(x.size())
+        
         x = self.skipped_connection(self.cont_layer2_out, x, x.size()[2], x.size()[3] )
         x = self.exp_layer2(x)
-        print(x.size())
+        
         x = self.skipped_connection(self.cont_layer1_out, x, x.size()[2], x.size()[3] )
         x = self.exp_layer1(x)
-        print(x.size())
         return x
    
     # input_x has to be shape of (n_batches, n_channels, height, width) 
@@ -220,9 +216,15 @@ class U_net(nn.Module):
         
 
 
-# In[1]:
+# In[4]:
 
 
 if __name__ == '__main__':
     get_ipython().system('jupyter nbconvert --to script model.ipynb')
+
+
+# In[ ]:
+
+
+
 

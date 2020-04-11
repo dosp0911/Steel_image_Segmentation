@@ -45,8 +45,9 @@ class Steel_dataset(Dataset):
         mask = p().crop_img(mask, self.out_size[0], self.out_size[1])
         mask = torch.from_numpy(mask)
         
-        #overlap-tile strategy
-        img_arr = p().overlap_tile(img_arr, 92, 92) # input size H,W: (440, 1784) -> output size: H,W:(256,1600) 
+        # overlap-tile strategy
+        # tile size(h,w) : (input_size(h,w) - output_size(h,w)) / 2
+        img_arr = p().overlap_tile(img_arr, 93, 93) # input size H,W: (430, 1780) -> output size: H,W:(244,1588) 
         img_arr = torch.from_numpy(img_arr) / 255.0
         #convert img shape into(C,H,W)
         img_arr = img_arr.permute(2,0,1)
@@ -57,7 +58,7 @@ class Steel_dataset(Dataset):
         return len(self.dataframe)
 
 
-# In[4]:
+# In[5]:
 
 
 if __name__ == "__main__":
