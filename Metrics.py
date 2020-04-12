@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[4]:
 
 
 import torch
@@ -9,16 +9,21 @@ import torch.nn as nn
 import util
 
 
-# In[24]:
+# In[5]:
 
 
-def Dice(pred, target, threshhold=0.5, dims=(2,3)):
+def Dice(pred, target, dims=(2,3), reduction='mean'):
   smooth = 1e-4
-  pred = nn.Sigmoid(pred)
   intersection = (pred * target).sum(dim=dims) 
   union = pred.sum(dim=dims) + target.sum(dim=dims) 
 
   dice = torch.mean((2 * intersection + smooth) / (union + smooth))
+  
+  if reduction.lower() == 'sum':
+    dice = torch.sum(dice)
+  else:
+    dice = torch.mean(dice)
+  
   return dice
 
 
@@ -90,10 +95,8 @@ class GeneralizedDICELoss(nn.Module):
     """
     
     assert 1 < len(pred.size()) < 5 and 1 < len(target.size()) < 5
-    
-    
+
     smooth = 1e-4
-    pred = nn.Sigmoid(pred)
       
     intersection = (pred * target).sum(dim=dims) 
     union = pred.sum(dim=dims) + target.sum(dim=dims) 
@@ -108,14 +111,14 @@ class GeneralizedDICELoss(nn.Module):
     return 1 - dice
 
 
-# In[14]:
+# In[2]:
 
 
 class DICELoss(nn.Module):
   def __init__(self):
     super(DICELoss, self).__init__()
     
-  def forward(self, pred, target, dims=(2,3), threshhold=0.5, reduction='mean'):
+  def forward(self, pred, target, dims=(2,3), reduction='mean'):
     """
       args:
         pred : (N,C,H,W)->dim=(2,3), (N, H, W)->dim=(1,2), (H , W)->dim=None 
@@ -131,25 +134,13 @@ class DICELoss(nn.Module):
     
     assert 1 < len(pred.size()) < 5 and 1 < len(target.size()) < 5
     
-#     pred.requires_grad_(True)
-#     target.requires_grad_(True)
-    
-    smooth = 1e-4
-#     pred = (pred >= threshhold).type(torch.float32) # try changing into sigmoid function
-    pred = nn.Sigmoid(pred)  
-    intersection = (pred * target).sum(dim=dims) 
-    union = pred.sum(dim=dims) + target.sum(dim=dims) 
-    
-    if reduction.lower() == 'sum':
-      dice = torch.sum((2 * intersection + smooth) / (union + smooth))
-    else:
-      dice = torch.mean((2 * intersection + smooth) / (union + smooth))
+    dice = Dice(pred, target, dims=dims, reduction=reduction)
   
     return 1 - dice
   
 
 
-# In[23]:
+# In[2]:
 
 
 if __name__ == '__main__':

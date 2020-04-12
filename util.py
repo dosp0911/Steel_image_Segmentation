@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[26]:
+# In[19]:
 
 
 import pandas as pd
@@ -13,8 +13,12 @@ from tqdm import tqdm
 import torch
 import torch.nn as nn
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
-# In[2]:
+
+# In[3]:
 
 
 def csv_file_load(f_p, index_col=False ):
@@ -24,7 +28,7 @@ def csv_file_load(f_p, index_col=False ):
         raise FileExistsError(f'{f_p} no exist!')
 
 
-# In[16]:
+# In[4]:
 
 
 def move_files_to_class_folders(f_names, classes, root_f):
@@ -44,7 +48,7 @@ def move_files_to_class_folders(f_names, classes, root_f):
     print('Done.')
 
 
-# In[ ]:
+# In[5]:
 
 
 def print_model_memory_size(model):
@@ -55,7 +59,7 @@ def print_model_memory_size(model):
     print(f'Model size : {total_*4} byte -> {total_*4/1024**2} MiB')
 
 
-# In[49]:
+# In[6]:
 
 
 def get_pixel_value_frequencies(img_arr, dtype=int):
@@ -73,7 +77,7 @@ def get_pixel_value_frequencies(img_arr, dtype=int):
   return uvals_dic
 
 
-# In[46]:
+# In[7]:
 
 
 def get_weights_ratio_over_frequnecies(freq):
@@ -83,18 +87,60 @@ def get_weights_ratio_over_frequnecies(freq):
   return list(map(lambda x: 1/x, freq))
 
 
-# In[ ]:
+# In[8]:
 
 
-def load_model(path, model):
-  load_model = torch.load(path, map_location=device)
+def save_model(model, optim, save_path, epoch, loss):
+  torch.save({
+        # 'model' : model,
+        'model_state_dict': model.state_dict(),
+        'epoch': epoch,
+        'loss' : loss,
+        'optim_state_dict': optim.state_dict()
+    }, save_path)
+  print(f'model saved \n {save_path}')
+
+
+# In[9]:
+
+
+def load_model(path, model, map_location=None):
+  '''
+    args:
+      path : location to load model
+      model : model variable
+      map_location : device to load model
+    return:
+      model loaded weights from saved model
+  '''
+  load_model = torch.load(path, map_location=map_location)
   model.load_state_dict(load_model['model_state_dict'])
   return model
 
-  u_net = load_model('u_net_1e_114l.pt', u_net)
+
+# In[10]:
 
 
-# In[ ]:
+def display_imgs(imgs, title='img'):
+  '''
+      imgs : (N, H, W) or (N, C, H, W)
+  '''
+  plt.figure(figsize=(15,2)) 
+  if np.ndim(imgs) == 2:
+    plt.imshow(imgs)
+
+  for i in range(len(imgs)):
+    plt.subplot(len(imgs)//2, 2, i+1)
+    plt.title(f'{i}th {title}')
+    if np.ndim(imgs) == 3:
+      plt.imshow(imgs[i], cmap='gray')
+    elif np.ndim(imgs) == 4:
+      plt.imshow(np.transpose(imgs[i], (2,3,0)))
+
+
+# In[11]:
+
+
 
 
 def display_weights_of_model(model):
@@ -102,11 +148,50 @@ def display_weights_of_model(model):
   fg, axes = plt.subplots(l_p//5+1, 5, figsize=(15,15))
   fg.tight_layout()
 
-  for i, p in enumerate(model.parameters()):
-    sns.distplot(p.detach().numpy(), ax=axes[i//5,i%5])
+  #torch.nn.utils.parameters_to_vector
+  for i,(n, p) in enumerate(model.named_parameters()):
+    ax = axes[i//5,i%5]
+    ax.set_title(n)
+    sns.distplot(p.detach().numpy(), ax=ax)
 
 
-# In[28]:
+# In[12]:
+
+
+def display_trained_mask(output, title='trained'):
+  """
+    output : (N,C,H,W) display N trained masks 
+  """
+  output = torch.argmax(output, dim=1)
+  plt.figure(figsize=(15,2))
+  for i in range(len(output)):
+    plt.subplot(len(output)//2, 2, i+1)
+    plt.title(f'{i}th {title} mask')
+    plt.imshow(output[i], cmap='gray')
+
+
+# In[13]:
+
+
+def get_class_weights_by_pixel_frequencies(classId, EncodedPixels, img_size):
+  '''
+     img_size must be 1 dimension. (H*W)
+  '''
+  p_counts = np.zeros(len(classId.unique())+1)
+  
+  # counts total pixels of training image dataset
+  for c, e in zip(classId, EncodedPixels):
+    rlc = np.asarray(e.split(' '))
+    cls_pixels = sum(rlc[1::2].astype(int))
+    p_counts[c] += cls_pixels
+    p_counts[0] += img_size - cls_pixels 
+
+  p_counts /= img_size
+  
+  return util.get_weights_ratio_over_frequnecies(p_counts)
+
+
+# In[15]:
 
 
 class class2d_to_onehot(nn.Module):
@@ -140,36 +225,15 @@ class class2d_to_onehot(nn.Module):
   
 
 
-# In[33]:
+# In[20]:
 
 
 if __name__ == '__main__':
   get_ipython().system('jupyter nbconvert --to script util.ipynb')
 
 
-# In[30]:
+# In[ ]:
 
 
-torch.tensor([6,3,4,5,1]).unique()
 
-
-# In[32]:
-
-
-if __name__ == '__main__':
-
-  a = torch.zeros(3,7,8)
-  a[0,3,:] = 1
-  a[0,4,:] = 5
-  a[1,2,:] = 7
-  a[1,:,7] = 1
-  a[2,1:3,5:] = 2
-  a[2,3:5,2:4] = 5
-
-  print(a)
-  b = class2d_to_onehot([1,2,5])(a)
-  # 0, 1, 2, 5, 7
-  print(b.size())
-  print(b)
-  # torch.stack([a,b,c], dim=1)
 
