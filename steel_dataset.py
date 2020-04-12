@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[2]:
 
 
 from torch.utils.data.dataset import Dataset
@@ -15,8 +12,6 @@ import numpy as np
 from util import csv_file_load
 from pre_processing import Pre_process_img as p
 
-
-# In[3]:
 
 
 class Steel_dataset(Dataset):
@@ -58,14 +53,7 @@ class Steel_dataset(Dataset):
         return len(self.dataframe)
 
 
-# In[5]:
 
-
-if __name__ == "__main__":
-  get_ipython().system('jupyter nbconvert --to script steel_dataset.ipynb')
-
-
-# In[ ]:
 
 
 

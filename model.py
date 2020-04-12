@@ -215,16 +215,3 @@ class U_net(nn.Module):
         return o_x
         
 
-
-# In[4]:
-
-
-if __name__ == '__main__':
-    get_ipython().system('jupyter nbconvert --to script model.ipynb')
-
-
-# In[ ]:
-
-
-
-

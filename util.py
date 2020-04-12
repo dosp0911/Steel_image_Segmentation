@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[19]:
 
 
 import pandas as pd
@@ -18,7 +14,6 @@ import seaborn as sns
 import numpy as np
 
 
-# In[3]:
 
 
 def csv_file_load(f_p, index_col=False ):
@@ -27,8 +22,6 @@ def csv_file_load(f_p, index_col=False ):
     else:
         raise FileExistsError(f'{f_p} no exist!')
 
-
-# In[4]:
 
 
 def move_files_to_class_folders(f_names, classes, root_f):
@@ -48,8 +41,6 @@ def move_files_to_class_folders(f_names, classes, root_f):
     print('Done.')
 
 
-# In[5]:
-
 
 def print_model_memory_size(model):
     total_ = 0
@@ -59,7 +50,6 @@ def print_model_memory_size(model):
     print(f'Model size : {total_*4} byte -> {total_*4/1024**2} MiB')
 
 
-# In[6]:
 
 
 def get_pixel_value_frequencies(img_arr, dtype=int):
@@ -77,7 +67,6 @@ def get_pixel_value_frequencies(img_arr, dtype=int):
   return uvals_dic
 
 
-# In[7]:
 
 
 def get_weights_ratio_over_frequnecies(freq):
@@ -87,7 +76,6 @@ def get_weights_ratio_over_frequnecies(freq):
   return list(map(lambda x: 1/x, freq))
 
 
-# In[8]:
 
 
 def save_model(model, optim, save_path, epoch, loss):
@@ -99,9 +87,6 @@ def save_model(model, optim, save_path, epoch, loss):
         'optim_state_dict': optim.state_dict()
     }, save_path)
   print(f'model saved \n {save_path}')
-
-
-# In[9]:
 
 
 def load_model(path, model, map_location=None):
@@ -118,7 +103,7 @@ def load_model(path, model, map_location=None):
   return model
 
 
-# In[10]:
+
 
 
 def display_imgs(imgs, title='img'):
@@ -138,9 +123,6 @@ def display_imgs(imgs, title='img'):
       plt.imshow(np.transpose(imgs[i], (2,3,0)))
 
 
-# In[11]:
-
-
 
 
 def display_weights_of_model(model):
@@ -155,7 +137,6 @@ def display_weights_of_model(model):
     sns.distplot(p.detach().numpy(), ax=ax)
 
 
-# In[12]:
 
 
 def display_trained_mask(output, title='trained'):
@@ -170,7 +151,6 @@ def display_trained_mask(output, title='trained'):
     plt.imshow(output[i], cmap='gray')
 
 
-# In[13]:
 
 
 def get_class_weights_by_pixel_frequencies(classId, EncodedPixels, img_size):
@@ -190,8 +170,6 @@ def get_class_weights_by_pixel_frequencies(classId, EncodedPixels, img_size):
   
   return util.get_weights_ratio_over_frequnecies(p_counts)
 
-
-# In[15]:
 
 
 class class2d_to_onehot(nn.Module):
@@ -224,15 +202,6 @@ class class2d_to_onehot(nn.Module):
     return cls_stacks
   
 
-
-# In[20]:
-
-
-if __name__ == '__main__':
-  get_ipython().system('jupyter nbconvert --to script util.ipynb')
-
-
-# In[ ]:
 
 
 
