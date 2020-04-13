@@ -2,23 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40e99858-c386-4c48-8f54-a783b379e0a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/notebook/.ipynb_checkpoints/pre_train_model-checkpoint.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notebook/pre_train_model.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pre_train_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Steel_image_Segmentation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Steel_image_Segmentation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/train_accuracy/events.out.tfevents.1585627817.8762664f2baa.127.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pre_processing.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/steel_dataset.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/steel_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/steel_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_model.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebook/pre_train_model.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebook/pre_train_model.ipynb" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,7 +22,6 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="PATH_TO_GIT" value="C:\Users\kim\AppData\Local\GitHubDesktop\app-2.4.0\resources\app\git\cmd\git.exe" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
@@ -48,9 +37,42 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Python.pre_train_model">
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.model">
+    <configuration name="Metrics" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Steel_image_Segmentation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Metrics.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="model" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Steel_image_Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -95,8 +117,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.pre_train_model" />
         <item itemvalue="Python.model" />
+        <item itemvalue="Python.Metrics" />
+        <item itemvalue="Python.pre_train_model" />
       </list>
     </recent_temporary>
   </component>
@@ -118,12 +141,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

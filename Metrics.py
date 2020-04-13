@@ -1,21 +1,14 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[4]:
 
 
 import torch
 import torch.nn as nn
 import util
 
-
-# In[5]:
-
-
 def Dice(pred, target, dims=(2,3), reduction='mean'):
   smooth = 1e-4
+
   intersection = (pred * target).sum(dim=dims) 
-  union = pred.sum(dim=dims) + target.sum(dim=dims) 
+  union = pred.sum(dim=dims)**2 + target.sum(dim=dims)**2
 
   dice = torch.mean((2 * intersection + smooth) / (union + smooth))
   
@@ -28,7 +21,8 @@ def Dice(pred, target, dims=(2,3), reduction='mean'):
 
 
 
-def Iou(p, g):
+def Iou(p, g, threshold=0.5):
+  p = (p > threshold).float()
   p_ = p.contiguous().view(-1)
   g_ = g.contiguous().view(-1)
   intersection = (p_ * g_).sum()
@@ -66,9 +60,6 @@ def Precision(p, g):
 
 def F_score(p, r):
   return 2 * (p + r) / p * r 
-
-
-# In[17]:
 
 
 
@@ -111,9 +102,6 @@ class GeneralizedDICELoss(nn.Module):
     return 1 - dice
 
 
-# In[2]:
-
-
 class DICELoss(nn.Module):
   def __init__(self):
     super(DICELoss, self).__init__()
@@ -140,9 +128,7 @@ class DICELoss(nn.Module):
   
 
 
-# In[2]:
-
-
 if __name__ == '__main__':
-  get_ipython().system('jupyter nbconvert --to script Metrics.ipynb')
+  t = torch.rand(2,3,4,1)
+  print(t**2)
 
