@@ -6,7 +6,7 @@
 
 import torch 
 import torch.nn as nn
-import torch.nn.functional as F
+from torchsummary import summary
 
 from collections import OrderedDict
 import math
@@ -36,7 +36,7 @@ class Con2D(nn.Module):
         return self.sequential(x)
 
 
-def crop(self, features, size):
+def crop(features, size):
     h_old, w_old = features[0][0].size()
     h, w = size
     x = math.ceil((h_old - h) / 2)
@@ -58,35 +58,38 @@ class U_net_re(nn.Module):
         self.exp_block_2 = Con2D(256, 128, 3, is_bn=False)
         self.exp_block_1 = Con2D(128, 64, 3, is_bn=False)
 
-        self.final_layer = nn.Conv1d(64, out_channels, 1)
+        self.deconv_4 = nn.ConvTranspose2d(1024, 512, 2, stride=2)
+        self.deconv_3 = nn.ConvTranspose2d(512, 256, 2, stride=2)
+        self.deconv_2 = nn.ConvTranspose2d(256, 128, 2, stride=2)
+        self.deconv_1 = nn.ConvTranspose2d(128, 64, 2, stride=2)
 
-        self.pre_ = pre
+        self.final_layer = nn.Conv2d(64, out_channels, 1)
+
     def forward(self, x):
-
         con_block_1_out = self.con_block_1(x)
-        x = nn.MaxPool2d(2, stride=2)
+        x = nn.MaxPool2d(2, stride=2)(con_block_1_out)
         con_block_2_out = self.con_block_2(x)
-        x = nn.MaxPool2d(2, stride=2)
+        x = nn.MaxPool2d(2, stride=2)(con_block_2_out)
         con_block_3_out = self.con_block_3(x)
-        x = nn.MaxPool2d(2, stride=2)
+        x = nn.MaxPool2d(2, stride=2)(con_block_3_out)
         con_block_4_out = self.con_block_4(x)
-        x = nn.MaxPool2d(2, stride=2)
+        x = nn.MaxPool2d(2, stride=2)(con_block_4_out)
         x = self.con_block_5(x)
 
-        x = nn.ConvTranspose2d(1024, 512)(x)
-        x = torch.cat(crop(con_block_4_out, (x.size()[2], x.size()[3])), x, dim=1)
+        x = self.deconv_4(x)
+        x = torch.cat([crop(con_block_4_out, (x.size()[2], x.size()[3])), x], dim=1)
         x = self.exp_block_4(x)
 
-        x = nn.ConvTranspose2d(512, 256)(x)
-        x = torch.cat(crop(con_block_3_out,(x.size()[2], x.size()[3])), x, dim=1)
+        x = self.deconv_3(x)
+        x = torch.cat([crop(con_block_3_out,(x.size()[2], x.size()[3])), x], dim=1)
         x = self.exp_block_3(x)
 
-        x = nn.ConvTranspose2d(256, 128)(x)
-        x = torch.cat(crop(con_block_2_out,(x.size()[2], x.size()[3])), x, dim=1)
+        x = self.deconv_2(x)
+        x = torch.cat([crop(con_block_2_out,(x.size()[2], x.size()[3])), x], dim=1)
         x = self.exp_block_2(x)
 
-        x = nn.ConvTranspose2d(128, 64)(x)
-        x = torch.cat(crop(con_block_1_out,(x.size()[2], x.size()[3])), x, dim=1)
+        x = self.deconv_1(x)
+        x = torch.cat([crop(con_block_1_out,(x.size()[2], x.size()[3])), x], dim=1)
         x = self.exp_block_1(x)
 
         x = self.final_layer(x)
@@ -144,52 +147,53 @@ class U_net(nn.Module):
         self.c_bn52 = nn.BatchNorm2d(self.n_out_channels5)
         
         ### contractive path layers ###
-        # 1th layer, size of input image : (batch, c=3, h=256, w=1600)
+
         self.cont_layer1 = nn.Sequential(OrderedDict([
            ('c_conv11', nn.Conv2d(in_channels=self.in_channel, out_channels=self.n_out_channels1, kernel_size=self.c_kernel_size)),
-           ('c_act_f11', self.c_activation_f),
            ('c_bn_11', self.c_bn11),
+           ('c_act_f11', self.c_activation_f),
            ('c_conv12', nn.Conv2d(in_channels=self.n_out_channels1, out_channels=self.n_out_channels1, kernel_size=self.c_kernel_size)),
-           ('c_act_f12', self.c_activation_f),
-           ('c_bn_12', self.c_bn12)
+           ('c_bn_12', self.c_bn12),
+           ('c_act_f12', self.c_activation_f)
         ]))
     
         # 2th layer
         self.cont_layer2 = nn.Sequential(OrderedDict([
             ('c_conv21', nn.Conv2d(in_channels=self.n_out_channels1, out_channels=self.n_out_channels2, kernel_size=self.c_kernel_size)),
-            ('c_act_f21', self.c_activation_f),
             ('c_bn_21', self.c_bn21),
+            ('c_act_f21', self.c_activation_f),
             ('c_conv22', nn.Conv2d(in_channels=self.n_out_channels2, out_channels=self.n_out_channels2, kernel_size=self.c_kernel_size)),
-            ('c_act_f22', self.c_activation_f),
-            ('c_bn_22', self.c_bn22)
+            ('c_bn_22', self.c_bn22),
+            ('c_act_f22', self.c_activation_f)
+
         ]))
 
         # 3th layer
         self.cont_layer3 = nn.Sequential(OrderedDict([
             ('c_conv31', nn.Conv2d(in_channels=self.n_out_channels2, out_channels=self.n_out_channels3, kernel_size=self.c_kernel_size)),
-            ('c_act_f31', self.c_activation_f),
             ('c_bn_31', self.c_bn31),
-            ('c_conv32', nn.Conv2d(in_channels=self.n_out_channels3, out_channels=self.n_out_channels3, kernel_size=self.c_kernel_size)),
-            ('c_act_f32', self.c_activation_f),
+            ('c_act_f31', self.c_activation_f),
             ('c_bn_32', self.c_bn32),
+            ('c_conv32', nn.Conv2d(in_channels=self.n_out_channels3, out_channels=self.n_out_channels3, kernel_size=self.c_kernel_size)),
+            ('c_act_f32', self.c_activation_f)
         ]))
         # 4th layer
         self.cont_layer4 = nn.Sequential(OrderedDict([
             ('c_conv41', nn.Conv2d(in_channels=self.n_out_channels3, out_channels=self.n_out_channels4, kernel_size=self.c_kernel_size)),
-            ('c_act_f41', self.c_activation_f),
             ('c_bn_41', self.c_bn41),
+            ('c_act_f41', self.c_activation_f),
+            ('c_bn_42', self.c_bn42),
             ('c_conv42', nn.Conv2d(in_channels=self.n_out_channels4, out_channels=self.n_out_channels4, kernel_size=self.c_kernel_size)),
             ('c_act_f42', self.c_activation_f),
-            ('c_bn_42', self.c_bn42)
         ]))
         # 5th layer
         self.cont_layer5 = nn.Sequential(OrderedDict([
             ('c_conv51', nn.Conv2d(in_channels=self.n_out_channels4, out_channels=self.n_out_channels5, kernel_size=self.c_kernel_size)),
-            ('c_act_f51', self.c_activation_f),
             ('c_bn_51', self.c_bn51),
+            ('c_act_f51', self.c_activation_f),
             ('c_conv52', nn.Conv2d(in_channels=self.n_out_channels5, out_channels=self.n_out_channels5, kernel_size=self.c_kernel_size)),
+            ('c_bn_52', self.c_bn52),
             ('c_act_f52', self.c_activation_f),
-            ('c_bn_52', self.c_bn52)
         ]))
         
         ### expansive path layers ###
@@ -296,6 +300,11 @@ class U_net(nn.Module):
 
 
 if __name__ == '__main__':
-    a = torch.rand(2,3,4,5)
-
-    print((x.size()[2], x.size()[3]))
+    import util
+    u_net = U_net(1,1)
+    u_net = util.load_model('u_net_6e_612l.pt',u_net)
+    x = torch.rand(2,1,430, 1780)
+    u_net.eval()
+    with torch.no_grad():
+        out = u_net(x)
+    print(out)

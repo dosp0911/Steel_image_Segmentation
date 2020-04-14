@@ -6,9 +6,9 @@ import util
 
 def Dice(pred, target, dims=(2,3), reduction='mean'):
   smooth = 1e-4
-
+  # sigmoid function?
   intersection = (pred * target).sum(dim=dims) 
-  union = pred.sum(dim=dims)**2 + target.sum(dim=dims)**2
+  union = pred.sum(dim=dims) + target.sum(dim=dims)
 
   dice = torch.mean((2 * intersection + smooth) / (union + smooth))
   
@@ -18,6 +18,7 @@ def Dice(pred, target, dims=(2,3), reduction='mean'):
     dice = torch.mean(dice)
   
   return dice
+
 
 
 

@@ -55,6 +55,3 @@ class Steel_dataset(Dataset):
 
 
 
-
-
-

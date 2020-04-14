@@ -168,7 +168,7 @@ def get_class_weights_by_pixel_frequencies(classId, EncodedPixels, img_size):
 
   p_counts /= img_size
   
-  return util.get_weights_ratio_over_frequnecies(p_counts)
+  return get_weights_ratio_over_frequnecies(p_counts)
 
 
 
@@ -201,8 +201,6 @@ class class2d_to_onehot(nn.Module):
 
     return cls_stacks
   
-
-
 
 
 

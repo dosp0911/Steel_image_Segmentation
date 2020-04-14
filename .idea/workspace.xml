@@ -4,11 +4,10 @@
     <list default="true" id="40e99858-c386-4c48-8f54-a783b379e0a2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebook/pre_train_model.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebook/pre_train_model.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/steel_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/steel_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,19 +38,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.model">
+  <component name="RunManager" selected="Python.util">
     <configuration name="Metrics" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Steel_image_Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,9 +102,53 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="steel_dataset" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Steel_image_Segmentation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/steel_dataset.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Steel_image_Segmentation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/util.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.util" />
         <item itemvalue="Python.model" />
+        <item itemvalue="Python.steel_dataset" />
         <item itemvalue="Python.Metrics" />
         <item itemvalue="Python.pre_train_model" />
       </list>
@@ -141,42 +172,80 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1586695585070">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2765" y="400" key="#Notifications" timestamp="1586783328491">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state x="2765" y="400" key="#Notifications/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586783328490" />
+    <state width="1631" height="466" key="DebuggerActiveHint" timestamp="1586882850110">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="1631" height="466" key="DebuggerActiveHint/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586882850110" />
+    <state x="2660" y="273" key="FileChooserDialogImpl" timestamp="1586783484945">
+      <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586695585070" />
-    <state width="1899" height="295" key="GridCell.Tab.0.bottom" timestamp="1586708573871">
+    <state x="2660" y="273" key="FileChooserDialogImpl/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586783484945" />
+    <state width="1899" height="415" key="GridCell.Tab.0.bottom" timestamp="1586888915525">
       <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
-    <state width="1899" height="295" key="GridCell.Tab.0.bottom/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586708573871" />
-    <state width="1899" height="295" key="GridCell.Tab.0.center" timestamp="1586708573871">
+    <state width="1899" height="347" key="GridCell.Tab.0.bottom/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880746875" />
+    <state width="1899" height="415" key="GridCell.Tab.0.bottom/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915525" />
+    <state width="1899" height="415" key="GridCell.Tab.0.center" timestamp="1586888915525">
       <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
-    <state width="1899" height="295" key="GridCell.Tab.0.center/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586708573871" />
-    <state width="1899" height="295" key="GridCell.Tab.0.left" timestamp="1586708573871">
+    <state width="1899" height="347" key="GridCell.Tab.0.center/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880746875" />
+    <state width="1899" height="415" key="GridCell.Tab.0.center/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915525" />
+    <state width="1899" height="415" key="GridCell.Tab.0.left" timestamp="1586888915525">
       <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
-    <state width="1899" height="295" key="GridCell.Tab.0.left/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586708573871" />
-    <state width="1899" height="295" key="GridCell.Tab.0.right" timestamp="1586708573871">
+    <state width="1899" height="347" key="GridCell.Tab.0.left/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880746875" />
+    <state width="1899" height="415" key="GridCell.Tab.0.left/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915525" />
+    <state width="1899" height="415" key="GridCell.Tab.0.right" timestamp="1586888915525">
       <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
-    <state width="1899" height="295" key="GridCell.Tab.0.right/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586708573871" />
-    <state x="461" y="164" key="SettingsEditor" timestamp="1586695671198">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1899" height="347" key="GridCell.Tab.0.right/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880746875" />
+    <state width="1899" height="415" key="GridCell.Tab.0.right/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915525" />
+    <state width="1899" height="347" key="GridCell.Tab.1.bottom" timestamp="1586888915512">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="347" key="GridCell.Tab.1.bottom/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880759275" />
+    <state width="1899" height="347" key="GridCell.Tab.1.bottom/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915512" />
+    <state width="1899" height="347" key="GridCell.Tab.1.center" timestamp="1586888915512">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="347" key="GridCell.Tab.1.center/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880759275" />
+    <state width="1899" height="347" key="GridCell.Tab.1.center/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915512" />
+    <state width="1899" height="347" key="GridCell.Tab.1.left" timestamp="1586888915512">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="347" key="GridCell.Tab.1.left/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880759275" />
+    <state width="1899" height="347" key="GridCell.Tab.1.left/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915512" />
+    <state width="1899" height="347" key="GridCell.Tab.1.right" timestamp="1586888915512">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="347" key="GridCell.Tab.1.right/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586880759275" />
+    <state width="1899" height="347" key="GridCell.Tab.1.right/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586888915512" />
+    <state x="2381" y="163" key="SettingsEditor" timestamp="1586783493075">
+      <screen x="1920" y="-1" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586695671198" />
+    <state x="2381" y="163" key="SettingsEditor/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586783493075" />
+    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1586883225137">
+      <screen x="1920" y="-1" width="1920" height="1040" />
+    </state>
+    <state width="968" height="528" key="XDebugger.FullValuePopup/1920.-1.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586881248321" />
+    <state width="968" height="528" key="XDebugger.FullValuePopup/1920.-1.1920.1040/0.0.1920.1040@1920.-1.1920.1040" timestamp="1586883225137" />
     <state x="765" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586695756514">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
