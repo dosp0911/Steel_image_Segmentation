@@ -24,9 +24,9 @@
 
 <kbd>
 <div align="center">
-<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px"></p>
+<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px"></div>
 </kbd>
-</div>
+
 
 
 
