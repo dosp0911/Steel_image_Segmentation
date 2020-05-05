@@ -28,6 +28,8 @@
 </kbd>
 </div>
 
+
+
 #### Several problems that I faced while training
  - First I used BinaryCrossEntropy Loss function. But imbalance between background and foreground pixels made the train unstable.
    - How to fix : DICELOSS used instead. It is robust over pixel imbalance
