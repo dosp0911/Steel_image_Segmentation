@@ -106,11 +106,11 @@ def load_model(path, model, map_location=None):
 
 
 
-def display_imgs(imgs, title='img'):
+def display_imgs(imgs, title='img', figsize=(10,5)):
   '''
       imgs : (N, H, W) or (N, C, H, W)
   '''
-  plt.figure(figsize=(15,2)) 
+  plt.figure(figsize=figsize)
   if np.ndim(imgs) == 2:
     plt.imshow(imgs)
 
