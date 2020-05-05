@@ -26,6 +26,7 @@
 <div align="center">
 <img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px"></p>
 </kbd>
+</div>
 
 #### Several problems that I faced while training
  - First I used BinaryCrossEntropy Loss function. But imbalance between background and foreground pixels made the train unstable.
