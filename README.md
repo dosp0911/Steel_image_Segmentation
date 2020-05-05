@@ -15,15 +15,15 @@
 |Dice loss| 0.15| 0.36|
 
 <div align="center">
-<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/train.PNG?raw=true" width="150px" height="150px"/>
+<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/train.PNG?raw=true" width="300px" height="150px"/>
 
-<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/val_loss.PNG?raw=true" width="150px" height="150px"/>
+<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/val_loss.PNG?raw=true" width="300px" height="150px"/>
 
-<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/val_acc.PNG?raw=true" width="150px" height="150px"/>
+<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/val_acc.PNG?raw=true" width="300px" height="150px"/>
 </div>
 
 <kbd>
-<p align=center>
+<div align="center">
 <img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px"></p>
 </kbd>
 
