@@ -22,10 +22,13 @@
 <img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/val_acc.PNG?raw=true" width="300px" height="150px"/>
 </div>
 
-<kbd>
+
 <div align="center">
-<img align="center" src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px"></div>
-</kbd>
+<kbd>
+<img src= "https://github.com/dosp0911/Steel_image_Segmentation/blob/master/result/output.PNG?raw=true" width="500px" height="500px">
+ </kbd>
+ </div>
+
 
 
 
