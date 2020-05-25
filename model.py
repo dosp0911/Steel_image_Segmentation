@@ -44,10 +44,10 @@ def crop(features, size):
     return features[:, :, x:(x + h), y:(y + w)]
 
 class U_net(nn.Module):
-    def __init__(self, in_channles, out_channels):
+    def __init__(self, in_channels, out_channels):
         super(U_net, self).__init__()
 
-        self.con_block_1 = Con2D(in_channles, 64, 3)
+        self.con_block_1 = Con2D(in_channels, 64, 3)
         self.con_block_2 = Con2D(64, 128, 3)
         self.con_block_3 = Con2D(128, 256, 3)
         self.con_block_4 = Con2D(256, 512, 3)
