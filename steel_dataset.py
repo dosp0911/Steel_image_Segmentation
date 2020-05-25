@@ -13,7 +13,6 @@ from util import csv_file_load
 from pre_processing import Pre_process_img as p
 
 
-
 class Steel_dataset(Dataset):
     # out_size =  the size of output of the final layer for mask
     def __init__(self, img_f_path, dataframe, out_size=(256, 1600)):
@@ -37,12 +36,12 @@ class Steel_dataset(Dataset):
         
         # decode rle 1d into 2d tensor with maksing class number
         mask = p().decode_pixels_to_mask(size=np.shape(img_arr), encoded_p=encoded_p, mask_val=int(i_class))
-        mask = p().crop_img(mask, self.out_size[0], self.out_size[1])
+        # mask = p().crop_img(mask, self.out_size[0], self.out_size[1])
         mask = torch.from_numpy(mask)
         
         # overlap-tile strategy
         # tile size(h,w) : (input_size(h,w) - output_size(h,w)) / 2
-        img_arr = p().overlap_tile(img_arr, 93, 93) # input size H,W: (430, 1780) -> output size: H,W:(244,1588) 
+        # img_arr = p().overlap_tile(img_arr, 93, 93) # input size H,W: (430, 1780) -> output size: H,W:(244,1588)
         img_arr = torch.from_numpy(img_arr) / 255.0
         #convert img shape into(C,H,W)
         img_arr = img_arr.permute(2,0,1)

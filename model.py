@@ -12,23 +12,23 @@ from collections import OrderedDict
 import math
 
 class Con2D(nn.Module):
-    def __init__(self, in_c, out_c, k_size, is_bn=True):
+    def __init__(self, in_c, out_c, k_size, padding=1, is_bn=True):
         super(Con2D, self).__init__()
 
         if is_bn:
             self.sequential = nn.Sequential(
-                nn.Conv2d(in_c, out_c, k_size),
+                nn.Conv2d(in_c, out_c, k_size, padding=padding),
                 nn.BatchNorm2d(out_c),
                 nn.ReLU(inplace=True),
-                nn.Conv2d(out_c, out_c, k_size),
+                nn.Conv2d(out_c, out_c, k_size, padding=padding),
                 nn.BatchNorm2d(out_c),
                 nn.ReLU(inplace=True)
             )
         else:
             self.sequential = nn.Sequential(
-                nn.Conv2d(in_c, out_c, k_size),
+                nn.Conv2d(in_c, out_c, k_size, padding=padding),
                 nn.ReLU(inplace=True),
-                nn.Conv2d(out_c, out_c, k_size),
+                nn.Conv2d(out_c, out_c, k_size, padding=padding),
                 nn.ReLU(inplace=True)
             )
 
@@ -77,19 +77,19 @@ class U_net(nn.Module):
         x = self.con_block_5(x)
 
         x = self.deconv_4(x)
-        x = torch.cat([crop(con_block_4_out, (x.size()[2], x.size()[3])), x], dim=1)
+        x = torch.cat([con_block_4_out, x], dim=1)
         x = self.exp_block_4(x)
 
         x = self.deconv_3(x)
-        x = torch.cat([crop(con_block_3_out,(x.size()[2], x.size()[3])), x], dim=1)
+        x = torch.cat([con_block_3_out, x], dim=1)
         x = self.exp_block_3(x)
 
         x = self.deconv_2(x)
-        x = torch.cat([crop(con_block_2_out,(x.size()[2], x.size()[3])), x], dim=1)
+        x = torch.cat([con_block_2_out, x], dim=1)
         x = self.exp_block_2(x)
 
         x = self.deconv_1(x)
-        x = torch.cat([crop(con_block_1_out,(x.size()[2], x.size()[3])), x], dim=1)
+        x = torch.cat([con_block_1_out, x], dim=1)
         x = self.exp_block_1(x)
 
         x = self.final_layer(x)
@@ -97,3 +97,7 @@ class U_net(nn.Module):
         return x
 
 
+if __name__ =="__main__":
+    from torchsummary import summary
+    u_net = U_net(1, 4)
+    summary(u_net, (1, 256, 1600), device='cpu')
