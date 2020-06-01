@@ -1,18 +1,11 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
 
 
-import torch 
+import torch
 import torch.nn as nn
-from torchsummary import summary
-
-from collections import OrderedDict
 import math
 
 class Con2D(nn.Module):
-    def __init__(self, in_c, out_c, k_size, padding=1, is_bn=True):
+    def __init__(self, in_c, out_c, k_size=3, padding=1, is_bn=True):
         super(Con2D, self).__init__()
 
         if is_bn:
@@ -36,68 +29,176 @@ class Con2D(nn.Module):
         return self.sequential(x)
 
 
-def crop(features, size):
-    h_old, w_old = features[0][0].size()
-    h, w = size
-    x = math.ceil((h_old - h) / 2)
-    y = math.ceil((w_old - w) / 2)
-    return features[:, :, x:(x + h), y:(y + w)]
+class Downsample(nn.Module):
+    def __init__(self, in_c, out_c, ratio):
+        """
+            ratio : if 1/2 downsample, ratio=2 -> 1 time conv operation, ratio must be >= 2
+        """
+        super(Downsample, self).__init__()
+        m = []
+        r = int(math.log(ratio//2, 2))
 
-class U_net(nn.Module):
-    def __init__(self, in_channels, out_channels):
-        super(U_net, self).__init__()
+        m.append(nn.Conv2d(in_c, out_c, 3, stride=2, padding=1))
+        for i in range(r):
+            m.append(nn.Conv2d(out_c, out_c, 3, stride=2, padding=1))
 
-        self.con_block_1 = Con2D(in_channels, 64, 3)
-        self.con_block_2 = Con2D(64, 128, 3)
-        self.con_block_3 = Con2D(128, 256, 3)
-        self.con_block_4 = Con2D(256, 512, 3)
-        self.con_block_5 = Con2D(512, 1024, 3)
-
-        self.exp_block_4 = Con2D(1024, 512, 3, is_bn=False)
-        self.exp_block_3 = Con2D(512, 256, 3, is_bn=False)
-        self.exp_block_2 = Con2D(256, 128, 3, is_bn=False)
-        self.exp_block_1 = Con2D(128, 64, 3, is_bn=False)
-
-        self.deconv_4 = nn.ConvTranspose2d(1024, 512, 2, stride=2)
-        self.deconv_3 = nn.ConvTranspose2d(512, 256, 2, stride=2)
-        self.deconv_2 = nn.ConvTranspose2d(256, 128, 2, stride=2)
-        self.deconv_1 = nn.ConvTranspose2d(128, 64, 2, stride=2)
-
-        self.final_layer = nn.Conv2d(64, out_channels, 1)
+        self.sequential = nn.Sequential(*m)
 
     def forward(self, x):
-        con_block_1_out = self.con_block_1(x)
-        x = nn.MaxPool2d(2, stride=2)(con_block_1_out)
-        con_block_2_out = self.con_block_2(x)
-        x = nn.MaxPool2d(2, stride=2)(con_block_2_out)
-        con_block_3_out = self.con_block_3(x)
-        x = nn.MaxPool2d(2, stride=2)(con_block_3_out)
-        con_block_4_out = self.con_block_4(x)
-        x = nn.MaxPool2d(2, stride=2)(con_block_4_out)
-        x = self.con_block_5(x)
-
-        x = self.deconv_4(x)
-        x = torch.cat([con_block_4_out, x], dim=1)
-        x = self.exp_block_4(x)
-
-        x = self.deconv_3(x)
-        x = torch.cat([con_block_3_out, x], dim=1)
-        x = self.exp_block_3(x)
-
-        x = self.deconv_2(x)
-        x = torch.cat([con_block_2_out, x], dim=1)
-        x = self.exp_block_2(x)
-
-        x = self.deconv_1(x)
-        x = torch.cat([con_block_1_out, x], dim=1)
-        x = self.exp_block_1(x)
-
-        x = self.final_layer(x)
-
-        return x
+        return self.sequential(x)
 
 
-if __name__ =="__main__":
-    from torchsummary import summary
-    u_net = U_net(1, 4)
-    summary(u_net, (1, 256, 1600), device='cpu')
+class Upsample_HR(nn.Module):
+    def __init__(self, in_c, out_c, ratio):
+        super(Upsample_HR, self).__init__()
+        self.sequential = nn.Sequential(
+            nn.UpsamplingBilinear2d(scale_factor=ratio),
+            nn.Conv2d(in_c, out_c, 1)
+            )
+
+    def forward(self, x):
+        return self.sequential(x)
+
+
+class BlockConv(nn.Module):
+    def __init__(self, in_c, out_c):
+        super(BlockConv, self).__init__()
+        modules = [Con2D(in_c, out_c),
+                   Con2D(out_c, out_c),
+                   Con2D(out_c, out_c),
+                   Con2D(out_c, out_c)]
+        self.block = nn.Sequential(*modules)
+
+    def forward(self, x):
+        return self.block(x)
+
+
+class Branch(nn.Module):
+    def __init__(self, in_c, out_ratios):
+        super(Branch, self).__init__()
+        self.m_list = nn.ModuleList()
+        self.make_branch(in_c, out_ratios)
+
+    def make_branch(self, in_c, out_ratios):
+        """
+            out_ratios : dictionary for up and down , len(out_ratios) is number of out branches
+                i.e)  {'up': 2, 'up':1, 'down':2}
+        """
+        m = self.m_list
+        for ratio in out_ratios:
+            op, r = ratio.popitem()
+            if op == 'up':
+                if r == 1:
+                    m.append(Con2D(in_c, in_c))
+                else:
+                    m.append(Upsample_HR(in_c, int(in_c * (1 / r)), r))
+            elif op == 'down':
+                m.append(Downsample(in_c, int(in_c * r), r))
+            else:
+                raise ValueError('Sampling operation is not correct.')
+
+    def forward(self, x):
+        values = [m(x) for m in self.m_list]
+        return values
+
+
+class HRNet(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(HRNet, self).__init__()
+        c_ = [64, 128, 256, 512]
+        # Merge operation is in forward step
+
+        self.block1_1 = BlockConv(in_channels, c_[0])
+        self.branch1_1 = Branch(c_[0], [{'up': 1}, {'down': 2}])
+
+        self.block2_1 = BlockConv(c_[0], c_[0])
+        self.block2_2 = BlockConv(c_[1], c_[1])
+        self.branch2_1 = Branch(c_[0], [{'up': 1}, {'down': 2}, {'down': 4}])
+        self.branch2_2 = Branch(c_[1], [{'up': 2}, {'up': 1}, {'down': 2}])
+
+        self.block3_1 = BlockConv(c_[0], c_[0])
+        self.block3_2 = BlockConv(c_[1], c_[1])
+        self.block3_3 = BlockConv(c_[2], c_[2])
+        self.branch3_1 = Branch(c_[0], [{'up': 1}, {'down': 2},
+                                        {'down': 4}, {'down': 8}])
+        self.branch3_2 = Branch(c_[1], [{'up': 2}, {'up': 1},
+                                        {'down': 2}, {'down': 4}])
+        self.branch3_3 = Branch(c_[2], [{'up': 4}, {'up': 2},
+                                        {'up': 1}, {'down': 2}])
+
+        self.block4_1 = BlockConv(c_[0], c_[0])
+        self.block4_2 = BlockConv(c_[1], c_[1])
+        self.block4_3 = BlockConv(c_[2], c_[2])
+        self.block4_4 = BlockConv(c_[3], c_[3])
+        self.branch4_1 = Branch(c_[0], [{'up': 1}, {'down': 2},
+                                        {'down': 4}, {'down': 8}])
+        self.branch4_2 = Branch(c_[1], [{'up': 2}, {'up': 1},
+                                        {'down': 2}, {'down': 4}])
+        self.branch4_3 = Branch(c_[2], [{'up': 4}, {'up': 2},
+                                        {'up': 1}, {'down': 2}])
+        self.branch4_4 = Branch(c_[3], [{'up': 8}, {'up': 4},
+                                        {'up': 2}, {'up': 1}])
+
+        self.f_up1 = Upsample_HR(c_[1], c_[0], 2)
+        self.f_up2 = Upsample_HR(c_[2], c_[0], 4)
+        self.f_up3 = Upsample_HR(c_[3], c_[0], 8)
+
+        self.init_weights()
+
+    def forward(self, x):
+        x = self.block1_1(x)
+        b1 = self.branch1_1(x)
+
+        x11 = self.block2_1(b1[0])
+        x12 = self.block2_2(b1[1])
+
+        b21 = self.branch2_1(x11)
+        b22 = self.branch2_2(x12)
+
+        x11 = self.block3_1(b21[0]+b22[0])
+        x12 = self.block3_2(b21[1]+b22[1])
+        x13 = self.block3_3(b21[2]+b22[2])
+
+        b31 = self.branch3_1(x11)
+        b32 = self.branch3_2(x12)
+        b33 = self.branch3_3(x13)
+
+        x11 = self.block4_1(b31[0] + b32[0] + b33[0])
+        x12 = self.block4_2(b31[1] + b32[1] + b33[1])
+        x13 = self.block4_3(b31[2] + b32[2] + b33[2])
+        x14 = self.block4_4(b31[3] + b32[3] + b33[3])
+
+        b41 = self.branch4_1(x11)
+        b42 = self.branch4_2(x12)
+        b43 = self.branch4_3(x13)
+        b44 = self.branch4_4(x14)
+
+        f1 = b41[0] + b42[0] + b43[0] + b44[0]
+        f2 = self.f_up1(b41[1] + b42[1] + b43[1] + b44[1])
+        f3 = self.f_up2(b41[2] + b42[2] + b43[2] + b44[2])
+        f4 = self.f_up3(b41[3] + b42[3] + b43[3] + b44[3])
+
+        return torch.cat([f1, f2, f3, f4], dim=1)
+
+    def init_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.ConvTranspose2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, std=1e-3)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+
+
+if __name__ == '__main__':
+    hrnet = HRNet(12,4)
+    print(hrnet)
